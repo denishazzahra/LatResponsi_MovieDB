@@ -11,22 +11,7 @@ import javax.swing.JOptionPane;
  *
  * @author LENOVO
  */
-public class MovieModel {
-    public Connection connection;
-    public Statement statement;
-    static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://localhost/movie_db";
-    static final String USER = "root";
-    static final String PASS = ""; 
-    public MovieModel() {
-        try{
-            Class.forName(JDBC_DRIVER);
-            connection = (java.sql.Connection) DriverManager.getConnection(DB_URL, USER, PASS);
-            System.out.println("Connected successfully!");
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Connection failed!");
-        }
-    }
+public class MovieModel extends Connector {
     
     public void deleteMovie(Movie m){
         try{
@@ -68,13 +53,31 @@ public class MovieModel {
             ResultSet rs=statement.executeQuery(query);
             while(rs.next()){
                 if(rs.getString("total").equals("0")){
-                    JOptionPane.showMessageDialog(null, "Movie title already existed!");
                     return true;
                 }
             }
         }catch(Exception e){
             JOptionPane.showMessageDialog(null, "Checking failed!");
         }
+        JOptionPane.showMessageDialog(null, "Movie title already existed!");
+        return false;
+    }
+    
+    public boolean checkUpdate(String oldTitle,String newTitle){
+        try{
+            String query="SELECT COUNT(*) as total from movie where judul='"+newTitle+"'  and judul!='"+oldTitle+"'";
+            System.out.println(query);
+            statement=connection.createStatement();
+            ResultSet rs=statement.executeQuery(query);
+            while(rs.next()){
+                if(rs.getString("total").equals("0")){
+                    return true;
+                }
+            }
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Checking failed!");
+        }
+        JOptionPane.showMessageDialog(null, "Movie title already existed!");
         return false;
     }
     

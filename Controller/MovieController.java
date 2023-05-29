@@ -50,7 +50,7 @@ public class MovieController {
             public void actionPerformed(ActionEvent arg0) {
                 Movie m=new Movie(data[row][0],MV.getStoryline(),MV.getCharacterization(),MV.getActing());
                 m.setNewTitle(MV.getTitle());
-                if(MM.checkTitle(m.getNewTitle())){
+                if(MM.checkUpdate(m.getTitle(),m.getNewTitle())){
                     MM.updateMovie(m);
                     showData();
                 }
